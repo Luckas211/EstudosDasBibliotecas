@@ -1,0 +1,7 @@
+# Pacotes uteis para executar os estudos em notebook
+jupyter
+
+# Imagens e OCR
+pillow
+pdf2image
+pytesseract
