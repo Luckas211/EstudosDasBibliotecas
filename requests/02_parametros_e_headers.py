@@ -1,68 +1,146 @@
-# request/02_parametros_e_headers.py
+# requests/02_parametros_e_headers.py
 
 """
-Aula 2: Passando Parâmetros na URL e Enviando Cabeçalhos (Headers)
+Aula 2: parametros e headers com explicacao detalhada
 
-Muitas vezes, precisamos enviar informações adicionais em uma requisição GET.
-Isso é feito através de parâmetros na URL (query parameters) e cabeçalhos (headers).
+Objetivo desta aula:
+- entender o que colocar dentro de `params={}`
+- entender o que colocar dentro de `headers={}`
+- conhecer opcoes reais de `Accept`
+- entender por que JSON nao e o unico formato possivel
+- ver como a URL final fica montada
+- enxergar como o servidor recebe o que enviamos
 
-- Parâmetros: Usados para filtrar, ordenar ou paginar resultados.
-  Ex: `https://api.example.com/search?query=python&page=2`
-  Aqui, `query` e `page` são os parâmetros.
-
-- Cabeçalhos (Headers): Usados para enviar metadados sobre a requisição, como
-  o tipo de conteúdo que esperamos receber ou informações de autenticação.
-
-Para executar este arquivo:
-python request/02_parametros_e_headers.py
+Execute com:
+python requests/02_parametros_e_headers.py
 """
 
 import requests
 
-# --- Passando Parâmetros (Query Parameters) ---
+print("=== AULA 2: PARAMS E HEADERS ===")
 
-print("--- Requisição com Parâmetros ---")
+# Vamos usar o httpbin porque ele devolve exatamente o que recebeu.
+url = "https://httpbin.org/get"
 
-# URL base da API de busca de piadas.
-url_busca = "https://icanhazdadjoke.com/search"
-
-# Em vez de montar a URL manualmente, podemos passar os parâmetros
-# como um dicionário para o argumento `params` da função `get`.
-# A biblioteca `requests` cuidará de formatar a URL corretamente.
+# `{}` cria um dicionario.
+# Dentro do dicionario, cada item tem:
+# - uma chave
+# - `:`
+# - um valor
+# - `,` separando os itens
+#
+# `params` serve para montar a parte da URL depois do `?`
 parametros = {
-    "term": "cat",  # O termo que queremos buscar.
-    "limit": 3      # Limitar a 3 resultados.
+    "curso": "requests",
+    "nivel": "basico",
+    "pagina": 2,
 }
 
-# A requisição será feita para a URL: https://icanhazdadjoke.com/search?term=cat&limit=3
-response_params = requests.get(url_busca, params=parametros)
-
-# A API `icanhazdadjoke` espera um cabeçalho específico para retornar JSON.
-# Vamos ver como fazer isso a seguir.
-
-# --- Enviando Cabeçalhos (Headers) ---
-
-print("\n--- Requisição com Cabeçalhos ---")
-
-# Cabeçalhos também são passados como um dicionário, mas para o argumento `headers`.
-# O `User-Agent` identifica quem está fazendo a requisição (neste caso, nosso script).
-# O `Accept` informa ao servidor qual formato de dados preferimos receber.
+# `headers` tambem recebe um dicionario.
+# Aqui voce manda metadados da requisicao.
 cabecalhos = {
-    "User-Agent": "Meu App de Estudo (https://github.com/usuario/meu-repo)",
-    "Accept": "application/json"
+    "Accept": "application/json",
+    "User-Agent": "ManualDeEstudosRequests/1.0",
 }
 
-# Fazemos a mesma requisição de antes, mas agora incluindo os cabeçalhos.
-response_headers = requests.get(url_busca, params=parametros, headers=cabecalhos)
+print(f"URL base: {url}")
+print(f"Parametros enviados: {parametros}")
+print(f"Headers enviados: {cabecalhos}")
 
-print(f"URL final da requisição: {response_headers.url}")
-print(f"Status Code: {response_headers.status_code}")
+# Leia esta linha assim:
+# - `params=parametros` manda um dicionario que vira query string
+# - `headers=cabecalhos` manda os cabecalhos HTTP
+# - `timeout=10` limita o tempo de espera
+response = requests.get(
+    url,
+    params=parametros,
+    headers=cabecalhos,
+    timeout=10,
+)
 
-# Agora, a resposta virá em JSON, como solicitado no cabeçalho 'Accept'.
-dados_json = response_headers.json()
+print("\n=== O QUE A REQUESTS MONTOU ===")
 
-print("\nResultados da busca por piadas:")
-for piada in dados_json["results"]:
-    print(f"- {piada['joke']}")
+# `.url` mostra a URL final, ja com os query params.
+print(f"URL final: {response.url}")
+print(f"Status code: {response.status_code}")
 
-print("\nFim da Aula 2. Tente mudar o termo da busca ou os parâmetros!")
+dados = response.json()
+
+print("\n=== O QUE O SERVIDOR RECEBEU ===")
+
+# `dados["args"]` mostra os query params recebidos.
+print("Args recebidos pelo servidor:")
+print(dados["args"])
+
+# `dados["headers"]` mostra varios headers vistos pelo servidor.
+print("\nAlguns headers recebidos pelo servidor:")
+print(f"Accept: {dados['headers'].get('Accept')}")
+print(f"User-Agent: {dados['headers'].get('User-Agent')}")
+
+print("\n=== COMO LER OS SIMBOLOS ===")
+print("parametros['curso'] -> pega o valor da chave 'curso'")
+print("dados['args']['pagina'] -> pega 'pagina' dentro de 'args'")
+
+# `str(...)` converte o valor para texto para facilitar esta comparacao.
+print(f"Valor recebido para pagina: {dados['args']['pagina']}")
+
+print("\n=== QUANDO USAR ===")
+print("Use params para filtros, busca, paginacao e ordenacao.")
+print("Use headers para metadados, autenticacao e formato esperado.")
+
+print("\n=== HEADERS COMUNS EM ESTUDO PROFISSIONAL ===")
+print("Accept -> formato que eu prefiro receber")
+print("User-Agent -> identifica meu sistema")
+print("Authorization -> envia token ou credencial")
+print("Content-Type -> informa o formato do corpo enviado")
+
+print("\n=== EXEMPLOS REAIS DE Accept ===")
+
+tipos_de_resposta = [
+    {
+        "nome": "JSON",
+        "url": "https://httpbin.org/json",
+        "accept": "application/json",
+        "por_que_usar": "APIs modernas costumam responder em JSON.",
+    },
+    {
+        "nome": "XML",
+        "url": "https://httpbin.org/xml",
+        "accept": "application/xml",
+        "por_que_usar": "Alguns sistemas legados e integracoes corporativas usam XML.",
+    },
+    {
+        "nome": "HTML",
+        "url": "https://httpbin.org/html",
+        "accept": "text/html",
+        "por_que_usar": "Paginas web normalmente devolvem HTML.",
+    },
+    {
+        "nome": "Texto puro",
+        "url": "https://httpbin.org/robots.txt",
+        "accept": "text/plain",
+        "por_que_usar": "Alguns endpoints devolvem mensagens ou textos simples.",
+    },
+]
+
+for exemplo in tipos_de_resposta:
+    print(f"\n--- Exemplo: {exemplo['nome']} ---")
+    print(f"Accept enviado: {exemplo['accept']}")
+    print(f"Por que usar: {exemplo['por_que_usar']}")
+
+    resposta_formato = requests.get(
+        exemplo["url"],
+        headers={"Accept": exemplo["accept"]},
+        timeout=10,
+    )
+
+    print(
+        "Content-Type devolvido pelo servidor: "
+        f"{resposta_formato.headers.get('Content-Type')}"
+    )
+    print(f"Primeiros caracteres da resposta: {resposta_formato.text[:80]!r}")
+
+print("\n=== REGRA PROFISSIONAL IMPORTANTE ===")
+print("`Accept` diz o que voce prefere receber.")
+print("`Content-Type` mostra o formato que realmente foi enviado ou recebido.")
+print("Nem todo servidor vai obedecer exatamente o valor de `Accept`.")

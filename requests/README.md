@@ -1,59 +1,93 @@
 # Modulo: requests
 
-A biblioteca `requests` e uma das formas mais praticas de conversar com APIs e sites usando Python.
-Com ela, voce aprende a buscar dados, enviar informacoes, tratar erros de rede e automatizar tarefas web.
+A biblioteca `requests` ajuda o Python a conversar com a web.
+Com ela, voce aprende a:
 
-## O que voce vai aprender
+- enviar requisicoes HTTP
+- consumir APIs
+- ler respostas em JSON
+- baixar arquivos
+- tratar erros de rede
+- montar pequenos clientes de API
 
-- fazer requisicoes `GET`, `POST`, `PUT`, `PATCH` e `DELETE`
-- enviar parametros, cabecalhos e autenticacao
-- tratar erros de conexao, timeout e respostas HTTP
-- baixar arquivos com seguranca
-- consumir APIs reais e interpretar JSON
-- montar funcoes reutilizaveis para acessar servicos web
-- construir pequenos projetos de automacao com APIs
+Este modulo foi reorganizado para ficar mais didatico e mais profundo.
+Agora ele esta dividido em:
 
-## Antes de estudar este modulo
+- materiais de apoio teoricos
+- aulas basicas
+- aulas intermediarias
+- aulas avancadas
+- projeto guiado
+- desafio final
 
-Voce precisa instalar a biblioteca:
+## O que estudar antes das aulas
 
-```bash
-pip install requests
-```
+Leia estes materiais primeiro:
 
-## Ordem sugerida
+1. `material_01_fundamentos_de_sintaxe.md`
+2. `material_02_http_json_e_api.md`
+3. `material_03_argumentos_mais_usados.md`
+4. `material_04_accept_content_type_e_formatos.md`
+5. `material_05_requests_em_estudo_profissional.md`
+
+Esses arquivos explicam com calma:
+
+- o que faz `import requests`
+- o que significa `requests.get(...)`
+- para que servem `()`, `{}`, `[]`, `.` e `=`
+- o que colocar dentro de `params`, `headers`, `json`, `data`, `files`
+- o que e uma requisicao, uma resposta, uma API e um JSON
+- como pensar em `Accept`, `Content-Type`, JSON, XML, HTML e texto puro
+- como estudar `requests` de um jeito mais profissional
+
+## Trilha por nivel
+
+### Basico
 
 1. `01_introducao_e_get.py`
 2. `02_parametros_e_headers.py`
 3. `03_post_e_outros_metodos.py`
 4. `04_tratamento_de_erros.py`
-5. `05_sessoes_e_autenticacao.py`
-6. `06_downloads_e_arquivos.py`
-7. `07_consumindo_apis_reais.py`
-8. `08_boas_praticas_e_cliente_reutilizavel.py`
-9. `09_projeto_guiado_consultor_web.py`
-10. `desafio_final_cliente_de_apis.py`
-11. `guia_de_estudos.md`
+5. `10_explorando_response_e_json_na_pratica.py`
 
-## APIs usadas nas aulas
+### Intermediario
+
+6. `05_sessoes_e_autenticacao.py`
+7. `06_downloads_e_arquivos.py`
+8. `07_consumindo_apis_reais.py`
+9. `08_boas_praticas_e_cliente_reutilizavel.py`
+10. `11_upload_de_arquivos_e_formularios.py`
+11. `12_timeout_retry_e_resiliencia.py`
+
+### Avancado
+
+12. `13_cliente_de_api_com_classe.py`
+13. `09_projeto_guiado_consultor_web.py`
+14. `14_monitorando_varias_urls.py`
+15. `15_formatos_e_content_types_na_pratica.py`
+16. `desafio_final_cliente_de_apis.py`
+
+## APIs usadas no estudo
 
 - `https://httpbin.org`
 - `https://jsonplaceholder.typicode.com`
 - `https://viacep.com.br`
 - `https://icanhazdadjoke.com`
 
-## Como estudar melhor
+## Como estudar bem este modulo
 
-1. Leia o cabecalho de cada arquivo antes de executar.
-2. Rode o script e observe com calma a saida.
-3. Modifique uma linha por vez e veja o que muda.
-4. Reescreva o exemplo com nomes e dados seus.
-5. Ao final de cada aula, tente explicar em voz alta o que aconteceu.
+1. Leia a teoria antes do codigo.
+2. Rode uma aula por vez.
+3. Observe a saida do terminal com calma.
+4. Compare a linha do codigo com a resposta da API.
+5. Troque valores dentro de `[]`, `{}` e `()` para ver o efeito.
+6. Reescreva uma chamada sem copiar.
+7. Explique em voz alta o que cada argumento faz.
 
-## Ideias de mini projetos
+## Dependencia
 
-- buscador de CEP
-- leitor de posts de uma API
-- baixador de imagens
-- cliente de API com menu no terminal
-- monitor simples de status de servicos
+Instale com:
+
+```bash
+pip install requests
+```

@@ -1,69 +1,92 @@
-# request/01_introducao_e_get.py
+# requests/01_introducao_e_get.py
 
 """
-Aula 1: Introdução à Biblioteca Requests e Requisições GET
+Aula 1: introducao a requests e primeira requisicao GET
 
-A biblioteca `requests` é o padrão de fato em Python para fazer requisições HTTP.
-Ela simplifica o trabalho com APIs web, download de conteúdo e interação com serviços online.
+Objetivo desta aula:
+- entender o que e uma requisicao GET
+- ler uma linha com `requests.get(...)`
+- identificar o que fazem `()`, `.`, `=`, `[]` e `{}`
+- observar como a resposta chega ao Python
 
-Nesta aula, vamos aprender o básico: como fazer uma requisição GET, que é a operação
-mais comum na web, usada para solicitar dados de um servidor.
-
-Para executar este arquivo:
-1. Certifique-se de ter a biblioteca instalada: pip install requests
-2. Execute o comando: python request/01_introducao_e_get.py
+Execute com:
+python requests/01_introducao_e_get.py
 """
 
-# Importa a biblioteca requests para que possamos usá-la.
 import requests
 
-# --- Fazendo uma Requisição GET Simples ---
-
-# Uma URL (Uniform Resource Locator) é o endereço de um recurso na web.
-# Usaremos a API 'httpbin.org', que é ótima para testar requisições.
+# `url` e uma variavel.
+# `=` guarda um valor dentro dessa variavel.
+# O valor aqui e uma string com o endereco da API.
 url = "https://httpbin.org/get"
 
-print(f"Fazendo uma requisição GET para: {url}")
+print("=== AULA 1: GET BASICO ===")
+print(f"URL escolhida: {url}")
 
-# `requests.get(url)` envia uma requisição HTTP do tipo GET para a URL especificada.
-# O resultado é um objeto de Resposta (Response), que armazenamos na variável `response`.
-response = requests.get(url)
+# Esta e a linha mais importante da aula:
+# response = requests.get(url, timeout=10)
+#
+# Leia assim:
+# - `response` vai guardar o resultado
+# - `=` faz a atribuicao
+# - `requests` e o modulo importado
+# - `.` acessa a funcao `get` dentro do modulo
+# - `get` e a funcao que faz a requisicao HTTP GET
+# - `(` abre a chamada da funcao
+# - `url` e o primeiro argumento enviado
+# - `timeout=10` e um argumento nomeado
+# - `)` fecha a chamada
+response = requests.get(url, timeout=10)
 
-# --- Analisando a Resposta (Response) ---
+print("\n=== ANALISANDO A RESPOSTA ===")
 
-print("\n--- Análise da Resposta ---")
-
-# O atributo `status_code` nos diz o resultado da requisição.
-# Códigos 2xx (como 200) indicam sucesso.
-# Códigos 4xx (como 404) indicam erro do cliente (ex: página não encontrada).
-# Códigos 5xx indicam erro do servidor.
-print(f"Status Code: {response.status_code}")
+# `response.status_code` acessa um atributo do objeto Response.
+# O ponto `.` aqui significa "pegue algo dentro de response".
+print(f"Status code: {response.status_code}")
 
 if response.status_code == 200:
-    print("A requisição foi bem-sucedida!")
+    print("A requisicao deu certo.")
 else:
-    print("A requisição falhou.")
+    print("A requisicao nao voltou com sucesso.")
 
-# O atributo `headers` é um dicionário com os cabeçalhos da resposta HTTP.
-# Contém metadados como o tipo de conteúdo (Content-Type), data, etc.
-print(f"Tipo de Conteúdo (Content-Type): {response.headers['Content-Type']}")
+# `response.headers` costuma ser parecido com um dicionario.
+# `.get("Content-Type")` tenta buscar uma chave sem quebrar caso ela nao exista.
+tipo_conteudo = response.headers.get("Content-Type")
+print(f"Content-Type: {tipo_conteudo}")
 
-# --- Acessando o Conteúdo da Resposta ---
+print("\n=== TEXTO PURO DA RESPOSTA ===")
 
-print("\n--- Conteúdo da Resposta ---")
+# `.text` devolve o corpo da resposta como texto.
+# `[:120]` pega apenas os 120 primeiros caracteres.
+# Nos colchetes `[]`, voce coloca o intervalo que deseja acessar.
+print(response.text[:120])
 
-# O atributo `.text` retorna o conteúdo da resposta como uma string (texto puro).
-# É útil para HTML, texto simples, etc.
-# print("\nConteúdo como texto:")
-# print(response.text)
+print("\n=== JSON CONVERTIDO PARA PYTHON ===")
 
-# O método `.json()` converte uma resposta JSON (formato muito comum em APIs)
-# em um dicionário Python, o que facilita muito o acesso aos dados.
-print("\nConteúdo como JSON (dicionário Python):")
-dados_json = response.json()
-print(dados_json)
+# `.json()` converte o JSON da resposta em estruturas Python.
+# Normalmente isso vira um dicionario com listas e outros dicionarios dentro.
+dados = response.json()
 
-# Acessando um dado específico dentro do JSON.
-print(f"\nA URL de origem da requisição foi: {dados_json['origin']}")
+print(dados)
+print(f"Tipo da variavel dados: {type(dados)}")
 
-print("\nFim da Aula 1. Experimente trocar a URL por outra API, como 'https://api.github.com'.")
+# `dados["url"]`
+# - `dados` e um dicionario
+# - `["url"]` acessa a chave chamada "url"
+print(f"URL devolvida pelo servidor: {dados['url']}")
+
+# `dados["headers"]` acessa outra chave.
+# O valor dela tambem e um dicionario.
+print(f"Tipo de dados['headers']: {type(dados['headers'])}")
+
+# Exemplo de acesso em dois niveis:
+# - primeiro pegamos a chave "headers"
+# - depois pegamos a chave "Host" dentro dela
+print(f"Host recebido pelo servidor: {dados['headers']['Host']}")
+
+print("\n=== RESUMO MENTAL ===")
+print("GET e usado para buscar dados.")
+print("response guarda a resposta completa.")
+print("response.status_code mostra o resultado numerico.")
+print("response.text devolve texto.")
+print("response.json() converte JSON em estruturas Python.")

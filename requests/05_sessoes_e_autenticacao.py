@@ -1,70 +1,63 @@
-# request/05_sessoes_e_autenticacao.py
+# requests/05_sessoes_e_autenticacao.py
 
 """
-Aula 5: Sessões e Autenticação
+Aula 5: sessoes e autenticacao
 
-Sessões (Sessions):
-Um objeto de Sessão permite persistir certos parâmetros entre requisições.
-Por exemplo, se você fizer login em um site, a sessão manterá seus cookies
-de autenticação para as próximas requisições, sem que você precise enviá-los
-manualmente toda vez. Também otimiza conexões, sendo mais eficiente.
+Objetivo desta aula:
+- entender o que uma Session faz
+- aprender como cookies podem ser mantidos
+- conhecer autenticacao basica com `auth=(usuario, senha)`
 
-Autenticação:
-Muitas APIs exigem autenticação para serem acessadas. A `requests` suporta
-vários esquemas de autenticação, sendo o mais simples o "Basic Auth".
-
-Para executar este arquivo:
-python request/05_sessoes_e_autenticacao.py
+Execute com:
+python requests/05_sessoes_e_autenticacao.py
 """
 
 import requests
 
-# --- Usando um Objeto de Sessão ---
+print("=== AULA 5: SESSOES E AUTENTICACAO ===")
 
-print("--- Demonstração de Sessão ---")
+print("\n=== PARTE 1: SESSION ===")
 
-# 1. Criamos uma instância de `Session`.
-with requests.Session() as s:
-    # A primeira requisição para httpbin.org/cookies/set define um cookie.
-    # O nome do cookie é 'nome_cookie' e o valor é 'valor_cookie'.
-    s.get('https://httpbin.org/cookies/set/nome_cookie/valor_cookie')
+# `requests.Session()` cria um objeto de sessao.
+# Pense nele como um cliente que "lembra" informacoes entre requisicoes.
+with requests.Session() as sessao:
+    # Esta rota define um cookie.
+    sessao.get(
+        "https://httpbin.org/cookies/set/nome_cookie/valor_cookie",
+        timeout=10,
+    )
 
-    # 2. Fazemos uma segunda requisição usando a mesma sessão.
-    # A sessão automaticamente envia o cookie que foi definido na requisição anterior.
-    response_cookies = s.get('https://httpbin.org/cookies')
+    # Como usamos a mesma sessao, o cookie pode ser reenviado depois.
+    response_cookies = sessao.get("https://httpbin.org/cookies", timeout=10)
+    dados_cookies = response_cookies.json()
 
-    print("Cookies recebidos pelo servidor na segunda requisição:")
-    # O httpbin.org retorna os cookies que ele recebeu de nós.
-    print(response_cookies.json())
+    print("Cookies vistos pelo servidor:")
+    print(dados_cookies)
 
-# O `with` garante que a sessão seja fechada corretamente no final.
+print("\n=== COMO LER ===")
+print("with requests.Session() as sessao:")
+print("- with abre um contexto controlado")
+print("- Session() cria a sessao")
+print("- as sessao guarda o objeto com esse nome")
 
+print("\n=== PARTE 2: AUTENTICACAO BASICA ===")
 
-# --- Autenticação Básica (Basic Auth) ---
-
-print("\n--- Demonstração de Autenticação Básica ---")
-
-# Este endpoint é protegido por autenticação. O usuário é 'user' e a senha é 'pass'.
 url_auth = "https://httpbin.org/basic-auth/user/pass"
 
-# Tentativa sem autenticação (vai falhar com status 401 Unauthorized)
-response_sem_auth = requests.get(url_auth)
-print(f"Tentativa sem autenticação - Status: {response_sem_auth.status_code}")
+response_sem_auth = requests.get(url_auth, timeout=10)
+print(f"Sem auth -> status: {response_sem_auth.status_code}")
 
-# Tentativa com autenticação correta
-# A `requests` facilita a autenticação básica com o argumento `auth`.
-# Basta passar uma tupla com (usuário, senha).
-try:
-    response_com_auth = requests.get(url_auth, auth=('user', 'pass'))
+# `auth=("user", "pass")`
+# Aqui temos uma tupla dentro de `()`.
+# O primeiro item e o usuario.
+# O segundo item e a senha.
+response_com_auth = requests.get(url_auth, auth=("user", "pass"), timeout=10)
+print(f"Com auth -> status: {response_com_auth.status_code}")
 
-    print(f"Tentativa com autenticação - Status: {response_com_auth.status_code}")
+if response_com_auth.status_code == 200:
+    print("Autenticacao bem-sucedida.")
+    print(response_com_auth.json())
 
-    # Se o status for 200, a autenticação foi bem-sucedida.
-    if response_com_auth.status_code == 200:
-        print("Autenticação bem-sucedida!")
-        print(response_com_auth.json())
-
-except requests.exceptions.RequestException as e:
-    print(f"Ocorreu um erro: {e}")
-
-print("\nFim da Aula 5. Sessões são essenciais para interagir com APIs que exigem login.")
+print("\n=== RESUMO ===")
+print("Session ajuda a reaproveitar conexoes e manter cookies.")
+print("auth=(usuario, senha) e uma forma simples de autenticacao.")

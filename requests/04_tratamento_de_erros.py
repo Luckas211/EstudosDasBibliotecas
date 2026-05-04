@@ -1,64 +1,60 @@
-# request/04_tratamento_de_erros.py
+# requests/04_tratamento_de_erros.py
 
 """
-Aula 4: Tratamento de Erros e Exceções
+Aula 4: tratamento de erros em requests
 
-Ao trabalhar com redes, muitas coisas podem dar errado:
-- O servidor pode estar offline.
-- A sua conexão com a internet pode cair.
-- A URL pode estar errada (erro 404).
-- Você pode não ter permissão para acessar um recurso (erro 403).
+Objetivo desta aula:
+- entender por que requisicoes podem falhar
+- usar `try` e `except`
+- aprender `timeout`
+- usar `raise_for_status()`
 
-Um bom código deve prever e tratar esses erros de forma elegante,
-em vez de simplesmente quebrar.
-
-Para executar este arquivo:
-python request/04_tratamento_de_erros.py
+Execute com:
+python requests/04_tratamento_de_erros.py
 """
 
 import requests
-from requests.exceptions import ConnectionError, Timeout, HTTPError
+from requests.exceptions import ConnectionError, HTTPError, Timeout
 
-# --- Tratando Erros de Conexão e Timeout ---
+print("=== AULA 4: TRATAMENTO DE ERROS ===")
 
-print("--- Tentando conectar a uma URL inválida ---")
+print("\n=== PARTE 1: ERRO DE CONEXAO ===")
 
-# Uma URL que não existe ou está offline.
 url_invalida = "https://endereco.que.nao.existe.com"
 
 try:
-    # Usamos um bloco `try...except` para capturar possíveis erros.
-    # O argumento `timeout` define quantos segundos a `requests` deve esperar
-    # por uma resposta antes de desistir.
+    # `timeout=5` faz o programa desistir depois de 5 segundos.
     response = requests.get(url_invalida, timeout=5)
+    print(response.status_code)
 
-except ConnectionError as e:
-    # Este bloco é executado se houver um problema de rede
-    # (ex: DNS não encontrado, servidor recusou conexão).
-    print(f"Erro de conexão: Não foi possível conectar à URL. Detalhes: {e}")
+except ConnectionError as erro:
+    print("Houve erro de conexao.")
+    print(f"Detalhes tecnicos: {erro}")
 
 except Timeout:
-    # Este bloco é executado se o servidor demorar mais que o `timeout` para responder.
-    print("Erro de Timeout: O servidor demorou muito para responder.")
+    print("O servidor demorou demais para responder.")
 
-
-# --- Verificando Códigos de Status de Erro (4xx e 5xx) ---
-
-print("\n--- Tentando acessar uma página que não existe (Erro 404) ---")
+print("\n=== PARTE 2: ERRO HTTP ===")
 
 url_404 = "https://httpbin.org/status/404"
 
 try:
-    response_erro = requests.get(url_404)
-    print(f"Status Code recebido: {response_erro.status_code}")
+    response_404 = requests.get(url_404, timeout=10)
+    print(f"Status recebido: {response_404.status_code}")
 
-    # O método `raise_for_status()` verifica se o status code é um erro (4xx ou 5xx).
-    # Se for, ele levanta uma exceção do tipo `HTTPError`.
-    # Se o status for de sucesso (2xx), ele não faz nada.
-    response_erro.raise_for_status()
+    # `raise_for_status()` olha o status code.
+    # Se for erro 4xx ou 5xx, ele levanta uma excecao.
+    response_404.raise_for_status()
 
-except HTTPError as e:
-    # Capturamos a exceção levantada por `raise_for_status()`.
-    print(f"Erro HTTP: O servidor retornou um status de erro. Detalhes: {e}")
+except HTTPError as erro:
+    print("O servidor respondeu, mas com erro HTTP.")
+    print(f"Detalhes tecnicos: {erro}")
 
-print("\nFim da Aula 4. Sempre use `try...except` ao fazer requisições de rede!")
+print("\n=== COMO LER ESTA IDEIA ===")
+print("try -> tenta executar")
+print("except -> captura o erro se algo falhar")
+print("timeout=... -> evita espera infinita")
+print("raise_for_status() -> transforma status ruim em excecao")
+
+print("\n=== REGRA PRATICA ===")
+print("Ao trabalhar com internet, sempre considere falhas de rede.")

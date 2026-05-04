@@ -1,72 +1,127 @@
-# request/03_post_e_outros_metodos.py
+# requests/03_post_e_outros_metodos.py
 
 """
-Aula 3: Requisições POST e Outros Métodos HTTP
+Aula 3: POST, data, json e outros metodos HTTP
 
-Enquanto o GET é usado para *pedir* dados, o POST é usado para *enviar* dados
-para um servidor, geralmente para criar um novo recurso (ex: cadastrar um usuário,
-publicar um comentário).
+Objetivo desta aula:
+- entender a diferenca entre GET e POST
+- aprender o que colocar em `data={}` e em `json={}`
+- conhecer um exemplo com XML
+- entender melhor `Content-Type`
+- conhecer rapidamente PUT, PATCH e DELETE
 
-Outros métodos comuns:
-- PUT: Para atualizar um recurso existente completamente.
-- PATCH: Para atualizar um recurso existente parcialmente.
-- DELETE: Para remover um recurso.
-
-Nesta aula, vamos focar no POST, que é o segundo método mais utilizado.
-
-Para executar este arquivo:
-python request/03_post_e_outros_metodos.py
+Execute com:
+python requests/03_post_e_outros_metodos.py
 """
 
 import requests
 
-# Usaremos novamente o httpbin.org, que tem um endpoint específico para testar POST.
 url_post = "https://httpbin.org/post"
 
-# --- Enviando Dados como Formulário (x-www-form-urlencoded) ---
+print("=== AULA 3: POST E OUTROS METODOS ===")
 
-print("--- Requisição POST com dados de formulário ---")
+print("\n=== PARTE 1: ENVIANDO DATA DE FORMULARIO ===")
 
-# Criamos um dicionário com os dados que queremos enviar.
-# Isso simula o envio de um formulário HTML.
+# `data={}` costuma ser usado para formularios simples.
 dados_formulario = {
-    "nome": "João Silva",
-    "email": "joao.silva@example.com",
-    "curso": "Python para Automação"
+    "nome": "Ana",
+    "email": "ana@email.com",
+    "curso": "requests",
 }
 
-# Usamos `requests.post()` e passamos nosso dicionário para o argumento `data`.
-response_form = requests.post(url_post, data=dados_formulario)
-
-print(f"Status Code: {response_form.status_code}")
-
-# O httpbin retorna um JSON com os dados que ele recebeu.
+# O servidor vai receber esses dados como formulario.
+response_form = requests.post(url_post, data=dados_formulario, timeout=10)
 dados_resposta_form = response_form.json()
 
-# A chave 'form' na resposta conterá os dados que enviamos.
-print("Dados recebidos pelo servidor (formulário):")
-print(dados_resposta_form['form'])
+print(f"Status code: {response_form.status_code}")
+print("Dados de formulario que o servidor recebeu:")
+print(dados_resposta_form["form"])
+print(
+    "Content-Type recebido pelo servidor: "
+    f"{dados_resposta_form['headers'].get('Content-Type')}"
+)
 
+print("\n=== PARTE 2: ENVIANDO JSON ===")
 
-# --- Enviando Dados como JSON ---
-
-print("\n--- Requisição POST com dados JSON ---")
-
-# Em APIs modernas, é mais comum enviar dados diretamente no formato JSON.
-dados_json_payload = {
-    "id_produto": 12345,
+# `json={}` envia um corpo em JSON.
+# E muito comum em APIs modernas.
+payload_json = {
+    "produto": "notebook",
     "quantidade": 2,
-    "opcoes": {"cor": "azul", "tamanho": "M"}
+    "ativo": True,
 }
 
-# Para isso, usamos o argumento `json` em vez de `data`.
-# A biblioteca `requests` automaticamente define o cabeçalho 'Content-Type' para 'application/json'.
-response_json = requests.post(url_post, json=dados_json_payload)
-
+response_json = requests.post(url_post, json=payload_json, timeout=10)
 dados_resposta_json = response_json.json()
 
-# A chave 'json' na resposta conterá o payload JSON que enviamos.
-print("Dados recebidos pelo servidor (JSON):")
-print(dados_resposta_json['json'])
+print(f"Status code: {response_json.status_code}")
+print("JSON que o servidor recebeu:")
+print(dados_resposta_json["json"])
+print(
+    "Content-Type recebido pelo servidor: "
+    f"{dados_resposta_json['headers'].get('Content-Type')}"
+)
 
-print("\nFim da Aula 3. Os métodos `requests.put()`, `requests.delete()`, etc., funcionam de forma similar.")
+print("\n=== PARTE 3: ENVIANDO XML MANUALMENTE ===")
+
+xml_payload = """
+<pedido>
+    <produto>notebook</produto>
+    <quantidade>2</quantidade>
+</pedido>
+""".strip()
+
+headers_xml = {
+    "Content-Type": "application/xml",
+    "Accept": "application/json",
+}
+
+response_xml = requests.post(
+    url_post,
+    data=xml_payload,
+    headers=headers_xml,
+    timeout=10,
+)
+dados_resposta_xml = response_xml.json()
+
+print(f"Status code: {response_xml.status_code}")
+print("Cabecalho Content-Type recebido pelo servidor:")
+print(dados_resposta_xml["headers"].get("Content-Type"))
+print("Corpo bruto recebido pelo servidor:")
+print(dados_resposta_xml["data"])
+
+print("\n=== DIFERENCA MENTAL ===")
+print("data=... -> pense em formulario")
+print("json=... -> pense em API moderna")
+print("data=xml_string + Content-Type application/xml -> pense em XML manual")
+
+print("\n=== COMO LER A LINHA ===")
+print("requests.post(url_post, json=payload_json, timeout=10)")
+print("- requests: modulo")
+print("- post: funcao para POST")
+print("- url_post: destino")
+print("- json=payload_json: corpo JSON")
+print("- timeout=10: tempo maximo de espera")
+
+print("\n=== REGRA PROFISSIONAL IMPORTANTE ===")
+print("Nem toda API moderna usa JSON, embora JSON seja o mais comum.")
+print("Alguns sistemas pedem XML, texto puro ou formulario.")
+print("Leia a documentacao antes de escolher `json=` ou `data=`.")
+
+print("\n=== OUTROS METODOS HTTP ===")
+
+# Nao precisamos executar todos aqui para entender a ideia.
+# O importante e saber a intencao de cada um.
+print("GET -> buscar dados")
+print("POST -> criar ou enviar dados")
+print("PUT -> atualizar tudo")
+print("PATCH -> atualizar parte")
+print("DELETE -> remover")
+
+# Exemplo visual de como seriam as chamadas:
+print("\nExemplos de sintaxe:")
+print("requests.get(url)")
+print("requests.post(url, json={...})")
+print("requests.put(url, json={...})")
+print("requests.patch(url, json={...})")
+print("requests.delete(url)")
