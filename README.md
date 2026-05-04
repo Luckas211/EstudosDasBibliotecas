@@ -1,33 +1,43 @@
 # Manual das bibliotecas em Python
 
 Este diretorio foi organizado como uma trilha de estudos didatica para iniciantes.
-A proposta e que cada biblioteca funcione como um pequeno curso, com aulas progressivas, explicacoes em portugues simples e exemplos comentados linha por linha.
+A ideia e transformar cada biblioteca em um mini curso com aulas progressivas,
+explicacoes em portugues simples, exemplos comentados e pequenos projetos.
 
 ## Como a trilha esta organizada
 
-- Cada biblioteca ganhou sua propria pasta.
-- Dentro de cada pasta existe um `README.md` com a visao geral do modulo.
-- As aulas seguem o padrao `Aula01`, `Aula02`, `Aula03` e assim por diante.
-- O que puder ser estudado passo a passo foi criado em `.ipynb`.
-- O que fizer mais sentido como script executavel foi criado em `.py`.
+- cada biblioteca tem sua propria pasta
+- cada pasta pode ter um `README.md` com a visao geral do modulo
+- as aulas seguem uma ordem progressiva
+- notebooks `.ipynb` aparecem quando o estudo pede exploracao passo a passo
+- scripts `.py` aparecem quando o melhor formato e pratica executavel
+- alguns modulos tambem possuem guias de estudo e desafios finais
 
-## Bibliotecas estudadas
+## Modulos disponiveis
 
 - `os`
 - `re`
-- `pytesseract`
 - `pdf2image`
+- `pytesseract`
+- `sqlite3`
+- `requests`
+- `streamlit`
+- `fastapi`
 
-## Ordem sugerida
+## Ordem sugerida de estudo
 
 1. `os`
 2. `re`
-3. `pdf2image`
-4. `pytesseract`
+3. `sqlite3`
+4. `requests`
+5. `fastapi`
+6. `streamlit`
+7. `pdf2image`
+8. `pytesseract`
 
 ## Intencao pedagogica
 
-Os materiais foram escritos pensando em alguem leigo.
+Os materiais foram escritos pensando em alguem leigo ou em fase inicial de consolidacao.
 Por isso, cada modulo tenta responder sempre estas perguntas:
 
 - o que esta funcao faz
@@ -36,26 +46,31 @@ Por isso, cada modulo tenta responder sempre estas perguntas:
 - o que ela devolve
 - quando usar
 - como variar o mesmo conceito em exemplos diferentes
+- como transformar teoria em pratica
 
-## Antes de executar os notebooks
+## Antes de executar os materiais
 
-Para `os` e `re`, basta ter Python instalado.
+Para `os`, `re` e `sqlite3`, basta ter Python instalado.
 
-Para `pdf2image` e `pytesseract`, alem das bibliotecas Python, voce tambem precisa instalar ferramentas externas:
+Para outros modulos, algumas dependencias podem ser necessarias:
 
-- `pdf2image` depende do Poppler no Windows
-- `pytesseract` depende do Tesseract OCR instalado no sistema
+- `requests` exige a biblioteca `requests`
+- `fastapi` exige `fastapi` e `uvicorn`
+- `streamlit` exige `streamlit`
+- `pdf2image` depende de `pdf2image`, `Pillow` e Poppler no Windows
+- `pytesseract` depende de `pytesseract` e do Tesseract OCR no sistema
 
 ## Arquivo de apoio
 
-O arquivo `requirements-estudos.txt` reune as dependencias Python mais importantes para esta pasta de estudos.
+O arquivo `requirements-estudos.txt` reune dependencias Python uteis para a trilha.
+Bibliotecas da padrao, como `os`, `re` e `sqlite3`, nao entram nele.
 
 ## Forma recomendada de estudo
 
-1. Leia o `README.md` da biblioteca.
+1. Leia o `README.md` da biblioteca antes de comecar.
 2. Estude uma aula por vez.
-3. Execute cada bloco.
-4. Leia os comentarios de todas as linhas.
-5. Modifique os exemplos.
-6. Tente repetir sem copiar.
-7. Anote duvidas e compare uma aula com a outra.
+3. Execute os exemplos e observe a saida.
+4. Leia os comentarios com calma.
+5. Modifique valores, rotas, URLs e parametros.
+6. Reescreva partes sem copiar.
+7. Use os desafios finais para fixar o conteudo.

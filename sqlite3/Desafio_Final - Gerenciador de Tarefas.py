@@ -42,16 +42,45 @@ NOME_BANCO = 'tarefas.db'
 
 # 1. Função para conectar e criar a tabela (Executada ao iniciar o app)
 def inicializar_banco():
-    # DICA: Use CREATE TABLE IF NOT EXISTS
-    pass 
+    conn = sqlite3.connect(NOME_BANCO)  # Conecta ou cria o banco de dados
+    cursor = conn.cursor()  # Cria um cursor para executar comandos SQL
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS tarefas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            titulo TEXT NOT NULL,
+            descricao TEXT,
+            status TEXT DEFAULT 'pendente'
+        )
+    """)  # Cria a tabela 'tarefas' se ela não existir
+    conn.commit()  # Salva as alterações no banco
+    conn.close()  # Fecha a conexão
+    print("Banco de dados e tabela inicializados com sucesso!")  # Mensagem de sucesso
 
 # 2. Função para adicionar tarefa (CREATE)
 def adicionar_tarefa(titulo, descricao):
-    pass
+    conn = sqlite3.connect(NOME_BANCO)  # Conecta ao banco
+    cursor = conn.cursor()  # Obtém o cursor
+    cursor.execute("INSERT INTO tarefas (titulo, descricao) VALUES (?, ?)", (titulo, descricao))  # Insere a nova tarefa
+    conn.commit()  # Confirma a transação
+    conn.close()  # Fecha a conexão
+    print(f"Tarefa '{titulo}' adicionada com sucesso!")  # Mensagem de confirmação
 
 # 3. Função para listar tarefas (READ)
 def listar_tarefas():
-    pass
+    conn = sqlite3.connect(NOME_BANCO)  # Conecta ao banco
+    cursor = conn.cursor()  # Obtém o cursor
+    cursor.execute("SELECT id, titulo, status FROM tarefas")  # Seleciona todas as tarefas
+    tarefas = cursor.fetchall()  # Busca todos os resultados
+    conn.close()  # Fecha a conexão
+
+    if not tarefas:  # Verifica se há tarefas
+        print("Nenhuma tarefa cadastrada.")  # Informa se não houver tarefas
+        return  # Sai da função
+
+    for tarefa in tarefas:  # Itera sobre cada tarefa
+        id_tarefa, titulo, status = tarefa  # Desempacota os dados da tarefa
+        print(f"ID: {id_tarefa}, Título: {titulo}, Status")
+              
 
 # 4. Função para marcar tarefa como concluída (UPDATE)
 def concluir_tarefa(id_tarefa):

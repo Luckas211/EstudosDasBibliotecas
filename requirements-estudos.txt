@@ -1,7 +1,10 @@
-# Pacotes uteis para executar os estudos em notebook
-jupyter
+# Bibliotecas externas usadas ou uteis nesta trilha.
+# Modulos da biblioteca padrao, como os, re e sqlite3, nao precisam entrar aqui.
 
-# Imagens e OCR
-pillow
+requests
+fastapi
+uvicorn
+streamlit
 pdf2image
+Pillow
 pytesseract
